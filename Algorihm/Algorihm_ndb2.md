@@ -462,3 +462,5 @@ print(data)
 data.remove(3)
 print(data)
 ```
+# reference
+## *이것이 코딩 테스트다 - 나동빈*에서 **발췌한 내용**을 인용했습니다.
