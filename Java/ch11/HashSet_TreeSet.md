@@ -147,6 +147,45 @@ class HashSetLotto {
   - 그래서 TreeSet 정렬과 범위에 유리하다. 트리가 많아질수록 추가, 삭제하는데 시간이 걸리게 된다. 
 - 레벨 순회 한 층씩 읽는 방식
 
+## TreeSet의 메서드
+생성자|설명
+--|--
+TreeSet()|기본 생성자
+TreeSet(Collection c)|주어진 컬렉션을 저장하는 TreeSet을 생성
+TreeSet(Comparator comp)|주어진 정렬조건으로 정렬하는 TreeSet을 생성
+TreeSet(SortedSet s)| 주어진 SortedSet을 구현한 컬렉션을 저장하는 TreeSet을 생성
+
+메서드|설명
+--|--
+boolean add(Object o)<br>boolean addAll(Collection c)|지정된 객체 또는 Collection의 객체들을 Collection에  추가
+Object ceiling(Object o)|지정된 객체와 같은 객체를 반환, 없으면 큰 값을 가진 객체 중 제일 가까운 값의 객체를 반환, 없으면 null
+void clear()|저장된 모든 객체를 삭제
+Object clone()|TreeSet을 복제하여 반환
+Comparator comparator()|TreeSet의 정렬기준을 반환
+boolean contains(Object o)<br>boolean containsAll(Collectin c)|지정된 객체 또는 Collection의 객체들이 포함되어 있는지 확인
+NavigableSet descendingSet()|TreeSet에 저장된 요소들을 역순으로 정렬해서 반환
+Object first()|정렬된 순서에서 첫 번째 객체를 반환
+Object floor(Object o)|지정된 객체와 같은 객체를 반환.<br> 없으면 작은 값을 가진 객체 중 제일 가까운 값의 객체를 반환. 없으면 null
+SortedSet headSet(Object toElement)|지정된 객체보다 작은 값의 객체들을 반환
+NavigableSet headSet(Object toElement, boolean inclusive)|지정된 객체보다 작은 값의 객체들을 반환<br>inclusive가 true이면, 같은 값의 객체도 포함
+Object higher(Object o)|지정된 객체보다 큰 값을 가진 객체 중 제일 가까운 같의 객체를 반환. 없으면 null
+boolean isEmpty()|TreeSet이 비어있는지 확인
+literator iterator()|TreeSet의 Iterator를 반환
+Object last()|정렬된 순서에서 마지막 객체를 반환
+Object lower(Object o)|지정된 객체보다 작은 값을 가진 객체 중 제일 가까운 값의 객체를 반환. 없으면 null
+Object pollFirst()|TreeSet의 첫번째 요소(제일 작은 값의 객체)를 반환
+Object pollLast()|TreeSet의 마지막 번째 요소(제일 큰 값의 객체)를 반환
+boolean remove(Object o)|지정된 객체를 삭제
+boolean retainAll(Collection c)|주어진 컬렉션과 공통된 요소만 남기고 삭제
+int size()|저장된 객체의 개수를 반환
+Spliterator spliterator()|TreeSet의 spliterator를 반환
+SortedSet subSet(Object fromElement, Object toElement)|범위 검색의 결과를 반환
+NavigableSet`<E>` subSet(Object fromElement, boolean fromInclusive, E toElement, boolean toInclusive)|범위 검색의 결과를 반환
+SortedSet tailSet(Object fromElement)|지정된 객체보다 큰 값의 객체들을 반환
+Object[] toArray()|저장된 객체를 객체배열로 반환
+Object[] toArray(Object[] a)|저장된 객체를 주어진 객체배열에 저장하여 반환
+
+
 # reference
 자바의 정석 - 남궁성
 
