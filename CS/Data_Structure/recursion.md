@@ -86,6 +86,52 @@ int fibo(int n)
 }
 ```
 
+# 이진탐색 재귀이용
+```c
+#include <stdio.h>
+
+int BS_Recursive(int ar[], int first, int last, int target)
+{
+	int mid;
+	if (first > last)
+		return -1;
+
+	mid = (first + last) / 2;
+
+	if (ar[mid] == target)
+		return mid;
+	else if (ar[mid] > target)
+		BS_Recursive(ar, first, mid - 1, target);
+	else
+		BS_Recursive(ar, mid + 1, last, target);
+}
+
+int main()
+{
+	int arr[] = { 1, 3, 5, 7, 9 };
+	int idx;
+	int len = sizeof(arr) / sizeof(int) - 1;
+	
+	idx = BS_Recursive(arr, 0, len, 7);
+
+	if (idx == -1)
+		printf("탐색을 실패하였습니다.\n");
+	else
+		printf("탐색 저장 인덱스: %d\n", idx);
+
+	idx = BS_Recursive(arr, 0, len, 4);
+
+	if (idx == -1)
+		printf("탐색을 실패하였습니다.\n");
+	else
+		printf("탐색 저장 인덱스: %d\n", idx);
+
+	return 0;
+}
+
+
+```
+
 # 하노이탑
 ```
 // 막대 from에 쌓여있는 n개의 원판을 막대 tmp를 사용하여 막대 to로 옮긴다.
@@ -124,4 +170,5 @@ int main(void)
 ```
 
 # reference
-C언어로 쉽게 풀어쓴 자료구조 - 천인국
+C언어로 쉽게 풀어쓴 자료구조 - 천인국   
+윤성우의 열혈 자료구조 - 윤성우
