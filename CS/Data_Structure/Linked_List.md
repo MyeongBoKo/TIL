@@ -166,7 +166,18 @@ void FInsert(List* plist, LData data)
 
 void SInsert(List* plist, LData data)
 {
-	// Next time
+	Node* newNode = (Node*)malloc(sizeof(Node));
+	Node* pred = plist->head;
+	
+	newNode->data = data;
+
+	while (pred->next != NULL && plist->comp(data, pred->next->data) != 0)
+		pred = pred->next;
+
+	newNode->next = pred->next;
+	pred->next = newNode;
+
+	(plist->numOfData)++;
 }
 
 void LInsert(List* plist, LData data)
@@ -221,7 +232,7 @@ int LCount(List* plist) {
 
 void SetSortRule(List* plist, int(*comp)(LData d1, LData d2))
 {
-	// Next time
+	plist->comp = comp;
 }
 ```
 ## main
@@ -229,11 +240,20 @@ void SetSortRule(List* plist, int(*comp)(LData d1, LData d2))
 #include <stdio.h>
 #include "DLinkedList.h"
 
+int WhoIsPrecede(int d1, int d2) {
+	if (d1 < d2)
+		return 0;	// d1이 정렬 순서상 앞선다.
+	else
+		return 1;	// d2가 정렬 순서상 앞서거나 같다.
+}
+
 int main(void)
 {
 	List list;
 	int data;
 	ListInit(&list);
+
+	SetSortRule(&list, WhoIsPrecede);	// 정렬의 기준을 등록한다.
 
 	LInsert(&list, 11);
 	LInsert(&list, 11);
@@ -272,6 +292,7 @@ int main(void)
 	printf("\n\n");
 	return 0;
 }
+
 ```
 
 # reference 
