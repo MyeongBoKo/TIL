@@ -51,7 +51,7 @@ int QIsEmpty(Queue* pq)
 		return FALSE;
 }
 
-int NextPosIdx(int pos)
+int NextPosIdx(int pos)		// 큐의 다음 위치에 해당하는 인덱스 값 반환
 {
 	if (pos == QUE_LEN - 1)			// 배열의 한칸은 비움
 		return 0;
