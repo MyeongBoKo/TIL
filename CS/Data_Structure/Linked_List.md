@@ -166,18 +166,7 @@ void FInsert(List* plist, LData data)
 
 void SInsert(List* plist, LData data)
 {
-	Node* newNode = (Node*)malloc(sizeof(Node));
-	Node* pred = plist->head;
-	
-	newNode->data = data;
-
-	while (pred->next != NULL && plist->comp(data, pred->next->data) != 0)
-		pred = pred->next;
-
-	newNode->next = pred->next;
-	pred->next = newNode;
-
-	(plist->numOfData)++;
+	// Next time
 }
 
 void LInsert(List* plist, LData data)
@@ -232,28 +221,18 @@ int LCount(List* plist) {
 
 void SetSortRule(List* plist, int(*comp)(LData d1, LData d2))
 {
-	plist->comp = comp;
+	// Next time
 }
 ```
-## main
 ```c
 #include <stdio.h>
 #include "DLinkedList.h"
-
-int WhoIsPrecede(int d1, int d2) {
-	if (d1 < d2)
-		return 0;	// d1이 정렬 순서상 앞선다.
-	else
-		return 1;	// d2가 정렬 순서상 앞서거나 같다.
-}
 
 int main(void)
 {
 	List list;
 	int data;
 	ListInit(&list);
-
-	SetSortRule(&list, WhoIsPrecede);	// 정렬의 기준을 등록한다.
 
 	LInsert(&list, 11);
 	LInsert(&list, 11);
@@ -290,6 +269,86 @@ int main(void)
 			printf("%d ", data);
 	}
 	printf("\n\n");
+	return 0;
+}
+```
+
+## 4-1
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+typedef struct __node
+{
+	int data;
+	struct __node* next;
+} Node;
+
+int main(void)
+{
+	Node* head = NULL;
+	Node* tail = NULL;
+	Node* cur = NULL;
+
+	Node* newNode = NULL;
+	int readData;
+
+	while (1) {
+		printf("자연수 입력: ");
+		scanf_s("%d", &readData);
+		if (readData < 1)
+			break;
+
+		newNode = (Node*)malloc(sizeof(Node));
+		newNode->data = readData;
+		newNode->next = NULL;
+
+		if (head == NULL)
+		{
+			head = newNode;
+			tail = newNode;
+		}
+			
+		else
+		{
+			newNode->next = head;
+			head = newNode;
+		}
+			
+	}
+	printf("\n");
+
+	printf("입력 받은 데이터의 전체출력! \n");
+	if (head == NULL)
+		printf("저장된 자연수가 존재하지 않습니다. \n");
+	else {
+		cur = head;
+		printf("%d ", cur->data);
+
+		while (cur->next != NULL) {
+			cur = cur->next;
+			printf("%d ", cur->data);
+		}
+	}
+	printf("\n\n");
+
+	if (head == NULL)
+		return 0;
+	else {
+		Node* delNode = head;
+		Node* delNextNode = head->next;
+
+		printf("%d을(를) 삭제합니다. \n", head->data);
+		free(delNode);
+
+		while (delNextNode != NULL) {
+			delNode = delNextNode;
+			delNextNode = delNextNode->next;
+
+			printf("%d을(를) 삭제합니다. \n", delNode->data);
+			free(delNode);
+		}
+	}
 	return 0;
 }
 
