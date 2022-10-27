@@ -139,5 +139,119 @@ int main(void)
 */
 ```
 
+## 더미 노드 기반의 양방향 연결 리스트
+### 헤더
+```c
+#ifndef __DB_LINKED_LIST_H__
+#define __DB_LINKED_LIST_H__
+
+#define TRUE		1
+#define FALSE		0
+
+typedef int Data;
+
+typedef struct __node
+{
+	Data data;
+	struct __node* next;
+	struct __node* prev;
+} Node;
+
+typedef struct __dbDLinkedList
+{
+	Node* head;
+	Node* tail;
+	Node* cur;
+	int numOfData;
+} DBDLinkedList;
+
+typedef DBDLinkedList List;
+
+void ListInit(List* plist);
+void LInsert(List* plist, Data data);
+
+int LFirst(List* plist, Data* pdata);
+int LNext(List* plist, Data* pdata);
+
+Data LRemvoe(List* plist);
+int LCount(List* plist);
+
+#endif
+```
+### 소스
+```c
+#include <stdio.h>
+#include "DBDLinkedList.h"
+
+void ListInit(List* plist)
+{
+	plist->head = (Node*)malloc(sizeof(Node));
+	plist->tail = (Node*)malloc(sizeof(Node));
+
+	plist->head->prev = NULL;
+	plist->head->next = plist->tail;
+
+	plist->tail->next = NULL;
+	plist->tail->prev = plist->head;
+
+	plist->numOfData = 0;
+}
+
+void Linsert(List* plist, Data data)
+{
+	Node* newNode = (Node*)malloc(sizeof(Node));
+	newNode->data = data;
+
+	newNode->prev = plist->tail->prev;
+	plist->tail->prev->next = newNode;
+
+	newNode->next = plist->tail;
+	plist->tail->prev = newNode;
+
+	(plist->numOfData)++;
+}
+
+int LFirst(List* plist, Data* pdata)
+{
+	if (plist->head->next == plist->tail)
+		return FALSE;
+
+	plist->cur = plist->head->next;
+	*pdata = plist->cur->data;
+	return TRUE;
+}
+
+int LNext(List* plist, Data* pdata)
+{
+	if (plist->cur->next == plist->tail)
+		return FALSE;
+
+	plist->cur = plist->cur->next;
+	*pdata = plist->cur->data;
+	return TRUE;
+}
+
+Data LRemove(List* plist)
+{
+	Node* rpos = plist->cur;
+	Data rdata = plist->cur->data;
+
+	plist->cur->prev->next = plist->cur->next;
+	plist->cur->next->prev = plist->cur->prev;
+
+	plist->cur = plist->cur->prev;
+
+	free(rpos);
+	(plist->numOfData)--;
+	return rdata;
+}
+
+int LCount(List* plist)
+{
+	return plist->numOfData;
+}
+```
+
+
 # reference 
 윤성우의 열혈 자료구조 - 윤성우
