@@ -29,7 +29,7 @@
   - 오른쪽 자식 노드의 인덱스 값: 부모 노드의 인덱스 값*2 + 1
   - 부모 노드의 인덱스 값: 자식 노드의 인덱스 값/2
 
-## 헤더파일
+### 헤더파일
 ```c
 #ifndef __SIMPLE_HEAP_H__
 #define __SIMPLE_HEAP_H__
@@ -64,7 +64,7 @@ HData HDelete(Heap* ph);
 #endif
 ```
 
-## 소스파일
+### 소스파일
 ```c
 #include "SimpleHeap.h"
 
@@ -153,7 +153,7 @@ HData HDelete(Heap* ph)
 }
 ```
 
-## 메인
+### 메인
 ```c
 #include <stdio.h>
 #include "SimpleHeap.h"
@@ -177,6 +177,244 @@ int main(void)
 		printf("%c \n", HDelete(&heap));
 
 	return 0;
+}
+```
+
+## 유용한 큐 & 우선순위 큐 구현
+### 헤더(유용한 큐)
+```c
+#ifndef __USEFUL_HEAP_H__
+#define __USEFUL_HEAP_H__
+
+#define TRUE		1
+#define FALSE		0
+
+#define HEAP_LEN	100
+
+typedef char HData;
+typedef int (PriorityComp)(HData d1, HData d2);
+
+typedef struct __heap
+{
+	PriorityComp* comp;
+	int numOfData;
+	HData heapArr[HEAP_LEN];
+} Heap;
+
+void HeapInit(Heap* ph, PriorityComp pc);
+int HIsEmpty(Heap* ph);
+
+void HInsert(Heap* ph, HData data);
+HData HDelete(Heap* ph);
+
+
+#endif
+```
+
+### 소스(유용한 큐)
+```c
+#include <stdio.h>
+#include "UseFulHeap.h"
+
+void HeapInit(Heap* ph, PriorityComp pc)
+{
+	ph->numOfData = 0;
+	ph->comp = pc;
+}
+
+int HIsEmpty(Heap* ph)
+{
+	if (ph->numOfData == 0)
+		return TRUE;
+	else
+		return FALSE;
+}
+
+int GetParentIdx(int idx)
+{
+	return idx / 2;
+}
+
+int GetLeftChildIdx(int idx)
+{
+	return idx * 2;
+}
+
+int GetRightChildIdx(int idx)
+{
+	return idx * 2 + 1;
+}
+
+int GetHiPriChildIdx(Heap* ph, int idx)
+{
+	if (GetLeftChildIdx(idx) > ph->numOfData)
+		return 0;
+
+	else if (GetLeftChildIdx(idx) == ph->numOfData)
+		return GetLeftChildIdx(idx);
+
+	else
+	{
+		if (ph->comp(ph->heapArr[GetLeftChildIdx(idx)], ph->heapArr[GetRightChildIdx(idx)]) >= 0)
+			return GetRightChildIdx(idx);
+		else
+			return GetLeftChildIdx(idx);
+	}
+}
+
+void HInsert(Heap* ph, HData data)
+{
+	int idx = ph->numOfData + 1;
+
+	while (idx != 1)
+	{
+		if (ph->comp(data, ph->heapArr[GetParentIdx(idx)]) > 0)
+		{
+			ph->heapArr[idx] = ph->heapArr[GetParentIdx(idx)];
+			idx = GetParentIdx(idx);
+		}
+		else
+		{
+			break;
+		}
+	}
+
+	ph->heapArr[idx] = data;
+	ph->numOfData++;
+}
+
+HData HDelete(Heap* ph)
+{
+	HData rdata = ph->heapArr[1];
+	HData lastData = ph->heapArr[ph->numOfData];
+
+	int parentIdx = 1;
+	int childIndx;
+
+	while (childIndx = GetHiPriChildIdx(ph, parentIdx))
+	{
+		if (ph->comp(lastData, ph->heapArr[childIndx]) >= 0)
+			break;
+
+		ph->heapArr[parentIdx] = ph->heapArr[childIndx];
+		parentIdx = childIndx;
+	}
+
+	ph->heapArr[parentIdx] = lastData;
+	ph->numOfData--;
+	return rdata;
+}
+```
+
+### 메인
+```c
+#include <stdio.h>
+#include "UseFulHeap.h"
+
+int DataPriComp(char ch1, char ch2)
+{
+	return ch2 - ch1;
+}
+
+int main(void)
+{
+	Heap heap;
+	HeapInit(&heap, DataPriComp);
+
+	HInsert(&heap, 'A');
+	HInsert(&heap, 'B');
+	HInsert(&heap, 'C');
+	printf("%c \n", HDelete(&heap));
+
+
+	HInsert(&heap, 'A');
+	HInsert(&heap, 'B');
+	HInsert(&heap, 'C');
+	printf("%c \n", HDelete(&heap));
+
+	while (!HIsEmpty(&heap))
+		printf("%c \n", HDelete(&heap));
+
+	return 0;
+}
+```
+
+### 헤더(우선순위 큐)
+```c
+#ifndef __PRIORITY_QUEUE_H__
+#define __PRIORITY_QUEUE_H_
+
+#include "UseFulHeap.h"
+
+typedef Heap PQueue;
+typedef HData PQData;
+
+void PQueueInit(PQueue* ppq, PriorityComp pc);
+
+int PQIsEmpty(PQueue* ppq);
+
+void PEnqueue(PQueue* ppq, PQData data);
+
+PQData PDequeue(PQueue* ppq);
+
+#endif
+```
+
+### 소스(우선순위 큐)
+```c
+#include <stdio.h>
+#include "PriorityQueue.h"
+#include "UseFulHeap.h"
+
+void PQueueInit(PQueue* ppq, PriorityComp pc)
+{
+	HeapInit(ppq, pc);
+}
+
+int PQIsEmpty(PQueue* ppq)
+{
+	return HIsEmpty(ppq);
+}
+
+void PEnqueue(PQueue* ppq, PQData data)
+{
+	HInsert(ppq, data);
+}
+
+PQData PDequeue(PQueue* ppq)
+{
+	return HDelete(ppq);
+}
+```
+
+### 메인
+```c
+#include <stdio.h>
+#include "PriorityQueue.h"
+
+
+int DataPriComp(char ch1, char ch2)
+{
+	return ch2 - ch1;
+}
+
+int main(void)
+{
+	PQueue pq;
+	PQueueInit(&pq, DataPriComp);
+
+	PEnqueue(&pq, 'A');
+	PEnqueue(&pq, 'B');
+	PEnqueue(&pq, 'C');
+	printf("%c \n", PDequeue(&pq));
+
+	PEnqueue(&pq, 'A');
+	PEnqueue(&pq, 'B');
+	PEnqueue(&pq, 'C');
+	printf("%c \n", PDequeue(&pq));
+
+	while(!PQIsEmpty(&pq))
+		printf("%c \n", PDequeue(&pq));
 }
 ```
 
