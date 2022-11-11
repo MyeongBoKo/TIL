@@ -233,7 +233,80 @@ void ChangeRightSubTree(BTreeNode* main, BTreeNode* sub);
 
 ## BinaryTree3.c
 ```c
-...
+#include <stdio.h>
+#include <stdlib.h>
+#include "BinaryTree3.h"
+
+BTreeNode* MakeBTreeNode(void)
+{
+	BTreeNode* nd = (BTreeNode*)malloc(sizeof(BTreeNode));
+	nd->left = NULL;
+	nd->right = NULL;
+	return nd;
+}
+
+BTData GetData(BTreeNode* bt)
+{
+	return bt->data;
+}
+
+void SetData(BTreeNode* bt, BTData data)
+{
+	bt->data = data;
+}
+
+BTreeNode* GetLeftSubTree(BTreeNode* bt)
+{
+	return bt->left;
+}
+
+BTreeNode* GetRightSubTree(BTreeNode* bt)
+{
+	return bt->right;
+}
+
+void MakeLeftSubTree(BTreeNode* main, BTreeNode* sub)
+{
+	if (main->left != NULL)
+		free(main->left);
+	
+	main->left = sub;
+}
+
+void MakeRightSubTree(BTreeNode* main, BTreeNode* sub)
+{
+	if (main->right != NULL)
+		free(main->right);
+	
+	main->right = sub;
+}
+
+void PreorderTraverse(BTreeNode* bt, VisitFuncPtr action)
+{
+	if (bt == NULL)
+		return;
+	action(bt->data);
+	PreorderTraverse(bt->left, action);
+	PreorderTraverse(bt->right, action);
+}
+
+void InorderTraverse(BTreeNode* bt, VisitFuncPtr action)
+{
+	if (bt == NULL)
+		return;
+	InorderTraverse(bt->left, action);
+	action(bt->data);
+	InorderTraverse(bt->right, action);
+}
+
+void PostorderTraverse(BTreeNode* bt, VisitFuncPtr action)
+{
+	if (bt == NULL)
+		return;
+	PostorderTraverse(bt->left, action);
+	PostorderTraverse(bt->right, action);
+	action(bt->data);
+}
 
 BTreeNode* RemoveLeftSubTree(BTreeNode* bt)
 {
@@ -269,6 +342,8 @@ void ChangeRightSubTree(BTreeNode* main, BTreeNode* sub)
 	main->right = sub;
 }
 	
+
+	
 ```
 
 ## BinarySearchTree2.h
@@ -303,7 +378,77 @@ void BSTShowAll(BTreeNode* bst);
 
 ## BinarySearchTree2.c
 ```c
-...
+#include <stdio.h>
+#include <stdlib.h>
+#include "BinarySearchTree2.h"
+
+void BSTMakeAndInit(BTreeNode** pRoot)
+{
+	*pRoot = NULL;
+}
+
+BSTData BSTGetNodeData(BTreeNode* bst)
+{
+	return GetData(bst);
+}
+
+void BSTInsert(BTreeNode** pRoot, BSTData data)
+{
+	BTreeNode* pNode = NULL;	// parent Node
+	BTreeNode* cNode = *pRoot;	// curent Node
+	BTreeNode* nNode = NULL;	// new Node
+
+	// 새로운 노드가 추가될 위치를 찾는다.
+	while (cNode != NULL)	// cNode가 NULL이 아니면 반복
+	{
+		if (data == GetData(cNode))
+			return;			// 데이터(키)의 중복 허용 X
+
+		pNode = cNode;
+
+		if (GetData(cNode) > data)
+			cNode = GetLeftSubTree(cNode);	// cNode는 현재 노드의 왼쪽 노드의 주소값을 받음
+		else
+			cNode = GetRightSubTree(cNode);	// cNode는 현재 노드의 오른쪽 노드의 주소값을 받음
+	}
+
+	// pNode의 자식 노드로 추가할 새 노드의 생성
+	nNode = MakeBTreeNode();				// 새 노드의 생성
+	SetData(nNode, data);					// 새 노드에 데이터 저장
+
+	// pNode의 자식 노드로 새 노드를 추가
+	if (pNode != NULL)						// 새 노드가 루트 노드가 아니면
+	{
+		if (data < GetData(pNode))
+			MakeLeftSubTree(pNode, nNode);
+		else
+			MakeRightSubTree(pNode, nNode);
+	}
+	else                                    // 새 노드가 루트 노드라면
+	{
+		*pRoot = nNode;						// 새 노드를 루트 노드로 지정
+	}
+}
+
+BTreeNode* BSTSearch(BTreeNode* bst, BSTData target)
+{
+	BTreeNode* cNode = bst;					// cNode에 bst 주소값 저장
+	BSTData cd;
+
+	while (cNode != NULL)
+	{
+		cd = GetData(cNode);
+
+		if (target == cd)
+			return cNode;
+		else if (target < cd)
+			cNode = GetLeftSubTree(cNode);	// cNode는 cNode의 왼쪽 노드 주소 값
+		else
+			cNode = GetRightSubTree(cNode);	// cNode는 cNode의 오른쪽 노드 주소 값
+	}
+
+	return NULL;
+}
 
 BTreeNode* BSTRemove(BTreeNode** pRoot, BSTData target)
 {
@@ -402,6 +547,11 @@ void BSTShowAll(BTreeNode* bst)
 {
 	InorderTraverse(bst, ShowIntData);	// 중위 순회
 }
+
+
+
+
+
 
 ```
 
